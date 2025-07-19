@@ -133,18 +133,8 @@ npm start
 
 ---
 
-## License
-
-MIT License
-
----
-
 ## Credits
 - Built by Shiva Siddhardha
 - Speech-to-text by Deepgram and Vosk
 - Summarization by Google Gemini
 
----
-
-## Screenshots
-*Add screenshots here if desired* 
