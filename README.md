@@ -50,7 +50,7 @@ cd meetscribe
 The fine-tuned summarization model is hosted on Google Drive due to file size limitations.
 
 1. **Download the model folder:**
-   - Download `fine_tuned_summmm` folder from: [Google Drive Link](https://drive.google.com/your-shared-link-here)
+   - Download `fine_tuned_summmm` folder from: [Google Drive Link]([https://drive.google.com/your-shared-link-here](https://drive.google.com/drive/folders/1hnwJvbhvQ8YXf3clwpyovRcMRQPnE-2P?usp=sharing))
    
 2. **Place in server directory:**
    ```bash
