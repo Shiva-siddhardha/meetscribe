@@ -1,0 +1,14 @@
+# Ignore node dependencies
+node_modules/
+
+# Ignore build output
+build/
+
+# Ignore environment files
+.env
+
+# Ignore logs
+*.log
+
+# Ignore the fine-tuned model folder (relative to server/)
+fine_tuned_summarizer/
