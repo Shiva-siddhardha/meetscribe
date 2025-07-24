@@ -156,16 +156,8 @@ services:
 
 ---
 
-## License
-
-MIT License
-
----
-
 ## Credits
 - Built by Shiva Siddhardha
 - Speech-to-text by Deepgram
 - Summarization by Google Gemini and HuggingFace Transformers
-
----
 
