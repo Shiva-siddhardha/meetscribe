@@ -30,9 +30,10 @@
 
 ```
 meetscribe/
-  client/      # React frontend
-  server/      # Node.js/Express backend (+ Python summarizer)
-  render.yaml  # Render deployment config
+  client/              # React frontend
+  server/              # Node.js/Express backend (+ Python summarizer)
+    fine_tuned_summmm/ # Fine-tuned model folder (download required)
+  render.yaml          # Render deployment config
 ```
 
 ---
@@ -45,7 +46,21 @@ git clone https://github.com/Shiva-siddhardha/meetscribe.git
 cd meetscribe
 ```
 
-### 2. Set Up Environment Variables
+### 2. Download Fine-Tuned Model
+The fine-tuned summarization model is hosted on Google Drive due to file size limitations.
+
+1. **Download the model folder:**
+   - Download `fine_tuned_summmm` folder from: [Google Drive Link](https://drive.google.com/your-shared-link-here)
+   
+2. **Place in server directory:**
+   ```bash
+   # Extract and move the downloaded folder to:
+   # meetscribe/server/fine_tuned_summmm/
+   ```
+   
+   **Important:** The `fine_tuned_summmm` folder must be placed directly inside the `server/` directory for the local NLP summarization to work properly.
+
+### 3. Set Up Environment Variables
 
 #### **Frontend (`client/.env`)**
 ```
@@ -59,7 +74,7 @@ GEMINI_API_KEY=your_gemini_api_key
 PORT=5000
 ```
 
-### 3. Install Dependencies
+### 4. Install Dependencies
 
 #### **Frontend**
 ```bash
@@ -74,7 +89,7 @@ npm install
 pip install -r requirements.txt
 ```
 
-### 4. Run Locally
+### 5. Run Locally
 
 #### **Start Backend (Node.js + Flask auto-starts)**
 ```bash
@@ -106,12 +121,27 @@ npm start
 
 ## Deployment on Render
 
+### **Important: Fine-Tuned Model Setup for Deployment**
+
+For deployment, you'll need to include the fine-tuned model in your deployment package:
+
+1. **Download the `fine_tuned_summmm` folder** from the Google Drive link above.
+2. **Add it to your server directory** before pushing to GitHub or deploying.
+3. **Consider model size limitations** on your deployment platform.
+
 ### **Backend (Node.js + Python) on Render**
 
-1. **Push your code to GitHub.**
-2. **Ensure `render.yaml` is present in your repo root.**
+1. **Ensure you have the fine-tuned model:**
+   - Download `fine_tuned_summmm` folder from Google Drive
+   - Place it in `server/fine_tuned_summmm/`
+   - Commit and push to your GitHub repository
+
+2. **Push your code to GitHub.**
+
+3. **Ensure `render.yaml` is present in your repo root.**
    - This file automates backend deployment, installs both Node and Python dependencies, and sets up environment variables.
-3. **Create a new Web Service on [Render](https://dashboard.render.com/):**
+
+4. **Create a new Web Service on [Render](https://dashboard.render.com/):**
    - Connect your GitHub repo.
    - Render will auto-detect `render.yaml` and use it for setup.
    - Set your environment variables (`GEMINI_API_KEY`, `PORT`) in the Render dashboard if not set in `render.yaml`.
@@ -147,6 +177,20 @@ services:
 
 ---
 
+## Troubleshooting
+
+### Local NLP Model Issues
+- **Model not found error:** Ensure `fine_tuned_summmm` folder is in `server/fine_tuned_summmm/`
+- **Permission issues:** Check that the model files have proper read permissions
+- **Memory issues:** The fine-tuned model requires sufficient RAM to load
+
+### Deployment Issues
+- **Build failures:** Ensure the fine-tuned model folder is included in your repository
+- **Size limitations:** Some deployment platforms have storage limits; consider model optimization
+- **Timeout issues:** Model loading may take time on first deployment
+
+---
+
 ## Environment Variables
 
 - `REACT_APP_DEEPGRAM_API_KEY` (frontend): Deepgram API key
@@ -160,4 +204,3 @@ services:
 - Built by Shiva Siddhardha
 - Speech-to-text by Deepgram
 - Summarization by Google Gemini and HuggingFace Transformers
-
