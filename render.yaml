@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: meetscribe-backend
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    preBuildCommand: pip install -r requirements.txt
+    startCommand: npm start
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 10000 

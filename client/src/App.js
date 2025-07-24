@@ -4,10 +4,27 @@ import RoomJoin from './components/RoomJoin';
 import VideoChat from './components/VideoChat';
 import TranscriptPanel from './components/TranscriptPanel';
 import SummaryViewer from './components/SummaryViewer';
-import { summarizeTranscript } from './utils/geminiApi';
+// import { summarizeTranscript } from './utils/geminiApi'; // (removed)
 import { CssBaseline, Container, Box, Typography } from '@mui/material';
 
 const ENDPOINT = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+
+async function summarizeTranscript(transcript, speaker = '', summarizer = 'gemini') {
+  try {
+    const response = await fetch('/summarize-transcript', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transcript, speaker, summarizer })
+    });
+    if (!response.ok) throw new Error('Failed to summarize');
+    const data = await response.json();
+    console.log('Summary API response:', data);
+    return data; // Return the full object
+  } catch (err) {
+    console.error('Summarization error:', err);
+    return {};
+  }
+}
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -64,10 +81,10 @@ function App() {
   }, [socket]);
 
   // Summarize handler
-  const handleSummarize = async (text, speaker) => {
+  const handleSummarize = async (text, speaker, summarizer) => {
     setLoading(true);
     setSummary([]); // or setSummary({})
-    const result = await summarizeTranscript(text, speaker);
+    const result = await summarizeTranscript(text, speaker, summarizer);
     setSummary(result); // <-- store the full object
     setLoading(false);
   };
@@ -80,7 +97,7 @@ function App() {
     <>
       <CssBaseline />
       <Container maxWidth="lg" sx={{ pt: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>ZoomText AI</Typography>
+        <Typography variant="h4" align="center" gutterBottom>MeetScribe AI</Typography>
         <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={3}>
           <Box flex={2}>
             <VideoChat

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Paper, MenuItem, Select, CircularProgress, Divider, Stack } from '@mui/material';
+import { Box, Typography, Button, Paper, MenuItem, Select, CircularProgress, Divider, Stack, FormControl, InputLabel } from '@mui/material';
 import jsPDF from 'jspdf';
 
 const SummaryViewer = ({ transcripts, onSummarize, summary, loading }) => {
   const [selectedSpeaker, setSelectedSpeaker] = useState('all');
+  const [summarizer, setSummarizer] = useState('gemini');
 
   const handleSummarize = () => {
     let text = '';
@@ -16,7 +17,7 @@ const SummaryViewer = ({ transcripts, onSummarize, summary, loading }) => {
       text = (transcripts[selectedSpeaker] || []).join(' ');
       speaker = selectedSpeaker;
     }
-    onSummarize(text, speaker);
+    onSummarize(text, speaker, summarizer);
   };
 
   const handleDownload = () => {
@@ -45,16 +46,28 @@ const SummaryViewer = ({ transcripts, onSummarize, summary, loading }) => {
     <Paper elevation={4} sx={{ p: 2, mt: 2, minWidth: 320 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography variant="h6">Summarize Transcript</Typography>
-        <Select
-          size="small"
-          value={selectedSpeaker}
-          onChange={e => setSelectedSpeaker(e.target.value)}
-        >
-          <MenuItem value="all">All Speakers</MenuItem>
-          {Object.keys(transcripts).map(speaker => (
-            <MenuItem key={speaker} value={speaker}>{speaker}</MenuItem>
-          ))}
-        </Select>
+        <Box display="flex" gap={1}>
+          <Select
+            size="small"
+            value={selectedSpeaker}
+            onChange={e => setSelectedSpeaker(e.target.value)}
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value="all">All Speakers</MenuItem>
+            {Object.keys(transcripts).map(speaker => (
+              <MenuItem key={speaker} value={speaker}>{speaker}</MenuItem>
+            ))}
+          </Select>
+          <Select
+            size="small"
+            value={summarizer}
+            onChange={e => setSummarizer(e.target.value)}
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value="gemini">Gemini</MenuItem>
+            <MenuItem value="local">Local</MenuItem>
+          </Select>
+        </Box>
       </Box>
       <Divider sx={{ my: 2 }} />
       <Button
@@ -65,7 +78,7 @@ const SummaryViewer = ({ transcripts, onSummarize, summary, loading }) => {
       >
         {loading ? <CircularProgress size={20} /> : 'Summarize'}
       </Button>
-      {summary && (summary.per_speaker || summary.overall_summary || Array.isArray(summary)) && (
+      {summary && (summary.per_speaker || summary.overall_summary || Array.isArray(summary) || Array.isArray(summary.summary)) && (
         <Box mt={2}>
           <Typography variant="subtitle1">Summary:</Typography>
           <Stack spacing={1} mt={1}>
@@ -82,6 +95,9 @@ const SummaryViewer = ({ transcripts, onSummarize, summary, loading }) => {
               </Box>
             )}
             {Array.isArray(summary) && summary.map((line, idx) => (
+              <Typography key={idx} variant="body2">- {line}</Typography>
+            ))}
+            {Array.isArray(summary.summary) && summary.summary.map((line, idx) => (
               <Typography key={idx} variant="body2">- {line}</Typography>
             ))}
           </Stack>
